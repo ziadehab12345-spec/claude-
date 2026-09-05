@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
-import { whatsappLink } from '@/lib/contact';
 
 /** Public site navigation, with the AR/EN switch that keeps the current page. */
 export function SiteHeader() {
@@ -55,14 +54,9 @@ export function SiteHeader() {
           >
             {t('language')}
           </Link>
-          <a
-            href={whatsappLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-gold btn-sm hidden sm:inline-flex"
-          >
-            {t('book')}
-          </a>
+          <Link href="/request" className="btn btn-gold btn-sm hidden sm:inline-flex">
+            {t('request')}
+          </Link>
           <button
             type="button"
             className="btn btn-ghost btn-sm md:hidden"
@@ -87,8 +81,8 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
-          <Link href="/my-booking" className="block py-2 text-sm text-ink-700" onClick={() => setOpen(false)}>
-            {t('myBooking')}
+          <Link href="/request" className="block py-2 text-sm text-ink-700" onClick={() => setOpen(false)}>
+            {t('request')}
           </Link>
         </nav>
       )}

@@ -2,27 +2,20 @@ import { describe, it, expect } from 'vitest';
 import { CATALOGUE } from '../db/catalogue';
 
 /**
- * The catalogue is imported from the office's existing site. These tests hold
- * the line on the two things that site does not publish, so a future edit
- * cannot quietly slip an invented price or a fabricated inventory count into
- * the seed.
+ * The catalogue is imported from the office's existing site. This site shows
+ * what the office offers and hands the request over; it quotes nothing and
+ * holds nothing. These tests keep a future edit from quietly reintroducing a
+ * price or an inventory count.
  */
 describe('seeded catalogue', () => {
-  it('carries no price at all', () => {
-    // Every price must come from the dashboard. If a `price` field ever
-    // appears here, this fails.
+  it('carries no price and no inventory count', () => {
+    // The office quotes each request itself and holds no bookable inventory
+    // here. If either concept ever reappears in the seed, this fails.
     for (const s of CATALOGUE) {
-      expect(Object.keys(s)).not.toContain('basePriceMinor');
-      expect(Object.keys(s)).not.toContain('price');
-    }
-  });
-
-  it('claims no real inventory beyond a single placeholder per property', () => {
-    // Fast Track rep capacity is the one place a count is guessed, and it is
-    // flagged as a placeholder in the dashboard.
-    for (const s of CATALOGUE) {
-      if (s.type === 'fasttrack') expect(s.placeholderUnits).toBeLessThanOrEqual(5);
-      else expect(s.placeholderUnits).toBe(1);
+      const keys = Object.keys(s);
+      for (const banned of ['basePriceMinor', 'price', 'currency', 'placeholderUnits', 'unitCount']) {
+        expect(keys, `${s.slug} must not carry ${banned}`).not.toContain(banned);
+      }
     }
   });
 

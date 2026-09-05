@@ -1,39 +1,27 @@
 /**
- * Staff/admin authentication.
+ * Staff/admin password authentication.
  *
- * Customers have no accounts in v1 — a public booking is tied to the name,
- * phone and email typed at checkout. Only the dashboard is behind a login.
+ * Customers have no accounts: the public site takes a request, not a login.
+ * Only the dashboard is behind a sign-in.
  *
- * Sessions are stateless JWTs in an httpOnly, SameSite=Lax cookie, signed with
- * AUTH_SECRET. The user base is a handful of people, so there is no reason for
- * a session table or an external identity provider.
+ * This module needs Node's crypto through bcrypt, so it must never be imported
+ * from Edge code. The token half lives in ./session-token, which the
+ * middleware imports instead.
  */
 import bcrypt from 'bcryptjs';
-import { SignJWT, jwtVerify } from 'jose';
 import type { Queryable } from './db';
-import type { UserRole } from './schema';
 import { forbidden, unauthenticated } from './errors';
+import type { SessionUser } from './session-token';
 
-export const SESSION_COOKIE = 'ahl_session';
-const SESSION_TTL_SECONDS = 60 * 60 * 12; // 12 hours — one working day
+export {
+  SESSION_COOKIE,
+  createSessionToken,
+  readSessionToken,
+  sessionCookieOptions,
+  type SessionUser,
+} from './session-token';
+
 const BCRYPT_ROUNDS = 12;
-
-export interface SessionUser {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-}
-
-function secret(): Uint8Array {
-  const value = process.env.AUTH_SECRET;
-  if (!value || value.length < 32) {
-    throw new Error(
-      'AUTH_SECRET must be set to at least 32 characters. Generate one with: openssl rand -base64 48',
-    );
-  }
-  return new TextEncoder().encode(value);
-}
 
 export function hashPassword(plain: string): Promise<string> {
   return bcrypt.hash(plain, BCRYPT_ROUNDS);
@@ -42,38 +30,6 @@ export function hashPassword(plain: string): Promise<string> {
 export function verifyPassword(plain: string, hash: string): Promise<boolean> {
   return bcrypt.compare(plain, hash);
 }
-
-export async function createSessionToken(user: SessionUser): Promise<string> {
-  return new SignJWT({ name: user.name, email: user.email, role: user.role })
-    .setProtectedHeader({ alg: 'HS256' })
-    .setSubject(user.id)
-    .setIssuedAt()
-    .setExpirationTime(`${SESSION_TTL_SECONDS}s`)
-    .sign(secret());
-}
-
-export async function readSessionToken(token: string): Promise<SessionUser | null> {
-  try {
-    const { payload } = await jwtVerify(token, secret(), { algorithms: ['HS256'] });
-    if (!payload.sub || (payload.role !== 'admin' && payload.role !== 'staff')) return null;
-    return {
-      id: payload.sub,
-      name: String(payload.name ?? ''),
-      email: String(payload.email ?? ''),
-      role: payload.role,
-    };
-  } catch {
-    return null;
-  }
-}
-
-export const sessionCookieOptions = {
-  httpOnly: true,
-  sameSite: 'lax',
-  secure: process.env.NODE_ENV === 'production',
-  path: '/',
-  maxAge: SESSION_TTL_SECONDS,
-} as const;
 
 /**
  * Authenticates an email/password pair.

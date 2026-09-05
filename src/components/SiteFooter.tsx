@@ -19,7 +19,7 @@ export function SiteFooter() {
           <Link href="/fast-track" className="text-ink-200 hover:text-gold-300">{t('fastTrack')}</Link>
           <Link href="/fleet" className="text-ink-200 hover:text-gold-300">{t('fleet')}</Link>
           <Link href="/stays" className="text-ink-200 hover:text-gold-300">{t('stays')}</Link>
-          <Link href="/my-booking" className="text-ink-200 hover:text-gold-300">{t('myBooking')}</Link>
+          <Link href="/request" className="text-ink-200 hover:text-gold-300">{t('request')}</Link>
           <Link href="/dashboard" className="text-ink-400 hover:text-gold-300">{t('dashboard')}</Link>
         </nav>
 

@@ -6,12 +6,12 @@
  * says exactly what the office already says. The English is a translation of
  * it — no English marketing claim here was invented.
  *
- * WHAT THAT SITE DOES NOT CONTAIN, and is therefore absent here too:
- *   - Any price. Not one, for any service. Every base price is seeded at 0 and
- *     must be entered in the dashboard before go-live.
- *   - Any per-model or per-property inventory count. The site claims "+50
- *     luxury cars" as a fleet-wide marketing figure, which says nothing about
- *     how many Maybachs exist, so units are seeded as placeholders.
+ * This site shows what the office offers and hands the request to the office.
+ * It quotes no prices and holds no inventory, which matches both how the
+ * business actually runs and what that site publishes: no price appears
+ * anywhere on it, and the only inventory figure is a fleet-wide "+50 luxury
+ * cars" marketing claim.
+
  *
  * Images are the Pexels stock photos the office already uses on that site.
  * They are stock, not photographs of the actual cars and apartments.
@@ -29,13 +29,16 @@ export interface SeedService {
   descriptionAr: string;
   highlights: { ar: string; en: string }[];
   imageUrl?: string;
-  /** Placeholder inventory size. Replace with real counts before go-live. */
-  placeholderUnits: number;
   sortOrder: number;
 }
 
+/**
+ * Card images are displayed around 400px wide, so 800 is enough for a 2x
+ * screen. Requesting 1200 would have shipped roughly twice the bytes for no
+ * visible difference across a page of twelve cards.
+ */
 const IMG = (id: string) =>
-  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=1200`;
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop`;
 
 // ---------------------------------------------------------------------------
 // Airport Fast Track — three tiers, inclusions taken from the existing site
@@ -58,7 +61,6 @@ export const FASTTRACK: SeedService[] = [
       { ar: 'بورتر أمتعة مخصص', en: 'Dedicated luggage porter' },
     ],
     imageUrl: IMG('17233279'),
-    placeholderUnits: 5,
     sortOrder: 10,
   },
   {
@@ -78,7 +80,6 @@ export const FASTTRACK: SeedService[] = [
       { ar: 'توفير عناء المشي', en: 'No walking through the terminal' },
     ],
     imageUrl: IMG('16954180'),
-    placeholderUnits: 5,
     sortOrder: 20,
   },
   {
@@ -98,7 +99,6 @@ export const FASTTRACK: SeedService[] = [
       { ar: 'معالجة الأمتعة بالكامل', en: 'Baggage handled end to end' },
     ],
     imageUrl: IMG('18029642'),
-    placeholderUnits: 5,
     sortOrder: 30,
   },
 ];
@@ -136,7 +136,6 @@ const car = (
   descriptionEn: `${nameEn}, part of our ${categoryEn} category. A 12-hour daily package with a professional bilingual driver, fuel and parking included.`,
   highlights: CAR_HIGHLIGHTS,
   imageUrl: IMG(imageId),
-  placeholderUnits: 1,
   sortOrder,
 });
 
@@ -171,21 +170,21 @@ export const HOTELS: SeedService[] = [
     nameAr: 'فورسيزونز', nameEn: 'Four Seasons',
     descriptionAr: 'أفخم الأجنحة العالمية ذات الإطلالة المباشرة على نهر النيل.',
     descriptionEn: 'World-class suites with a direct view over the Nile.',
-    highlights: HOTEL_HIGHLIGHTS, imageUrl: IMG('5996471'), placeholderUnits: 1, sortOrder: 10,
+    highlights: HOTEL_HIGHLIGHTS, imageUrl: IMG('5996471'), sortOrder: 10,
   },
   {
     type: 'hotel', slug: 'fairmont', categoryEn: '5-Star Hotel', categoryAr: 'فنادق 5 نجوم',
     nameAr: 'فيرمونت', nameEn: 'Fairmont',
     descriptionAr: 'أفخم الأجنحة العالمية ذات الإطلالة المباشرة على نهر النيل.',
     descriptionEn: 'World-class suites with a direct view over the Nile.',
-    highlights: HOTEL_HIGHLIGHTS, imageUrl: IMG('6436748'), placeholderUnits: 1, sortOrder: 11,
+    highlights: HOTEL_HIGHLIGHTS, imageUrl: IMG('6436748'), sortOrder: 11,
   },
   {
     type: 'hotel', slug: 'marriott-nile-city', categoryEn: '5-Star Hotel', categoryAr: 'فنادق 5 نجوم',
     nameAr: 'ماريوت نايل سيتي', nameEn: 'Marriott Nile City',
     descriptionAr: 'أفخم الأجنحة العالمية ذات الإطلالة المباشرة على نهر النيل.',
     descriptionEn: 'World-class suites with a direct view over the Nile.',
-    highlights: HOTEL_HIGHLIGHTS, imageUrl: IMG('6782581'), placeholderUnits: 1, sortOrder: 12,
+    highlights: HOTEL_HIGHLIGHTS, imageUrl: IMG('6782581'), sortOrder: 12,
   },
 ];
 
@@ -208,7 +207,7 @@ export const APARTMENTS: SeedService[] = [
       'شقق فسيحة من 2 إلى 4 غرف نوم وخدمات فندقية حصرية وبنتهاوس في الطابق الأخير مع خصوصية عائلية تامة، أمن على مدار الساعة، وتنظيف يومي في الزمالك.',
     descriptionEn:
       'Spacious two to four bedroom apartments with exclusive hotel services, and a top-floor penthouse. Complete family privacy, 24-hour security and daily cleaning, in Zamalek.',
-    highlights: APARTMENT_HIGHLIGHTS, imageUrl: IMG('7985342'), placeholderUnits: 1, sortOrder: 10,
+    highlights: APARTMENT_HIGHLIGHTS, imageUrl: IMG('7985342'), sortOrder: 10,
   },
   {
     type: 'apartment', slug: 'new-cairo-serviced-apartment', categoryEn: 'Serviced Apartment & Penthouse', categoryAr: 'شقق فندقية وبنتهاوس',
@@ -217,7 +216,7 @@ export const APARTMENTS: SeedService[] = [
       'شقق فسيحة من 2 إلى 4 غرف نوم وخدمات فندقية حصرية وبنتهاوس في الطابق الأخير مع خصوصية عائلية تامة، أمن على مدار الساعة، وتنظيف يومي في التجمع الخامس.',
     descriptionEn:
       'Spacious two to four bedroom apartments with exclusive hotel services, and a top-floor penthouse. Complete family privacy, 24-hour security and daily cleaning, in New Cairo (Tagamoa).',
-    highlights: APARTMENT_HIGHLIGHTS, imageUrl: IMG('36377055'), placeholderUnits: 1, sortOrder: 11,
+    highlights: APARTMENT_HIGHLIGHTS, imageUrl: IMG('36377055'), sortOrder: 11,
   },
   {
     type: 'apartment', slug: 'executive-vip-studio', categoryEn: 'Executive Studio', categoryAr: 'استوديوهات تنفيذية',
@@ -232,7 +231,7 @@ export const APARTMENTS: SeedService[] = [
       { ar: 'الضيوف الفرديين VIP', en: 'For individual VIP guests' },
       { ar: 'مواقع راقية', en: 'Prime locations' },
     ],
-    imageUrl: IMG('36224723'), placeholderUnits: 1, sortOrder: 12,
+    imageUrl: IMG('36224723'), sortOrder: 12,
   },
 ];
 

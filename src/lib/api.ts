@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 import { ZodError, type ZodType } from 'zod';
 import { AppError } from './errors';
 import { db } from './db';
-import { readSessionToken, SESSION_COOKIE, type SessionUser } from './auth';
+import { readSessionToken, SESSION_COOKIE, type SessionUser } from './session-token';
 
 export function ok<T>(data: T, init?: ResponseInit): NextResponse {
   return NextResponse.json({ data }, { status: 200, ...init });

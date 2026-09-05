@@ -21,9 +21,11 @@ export default async function StaysPage({ params }: { params: Promise<{ locale: 
       <p className="eyebrow">{t('hotel')}</p>
       <h1 className="mt-2 text-4xl">{t('hotel')} · {t('apartment')}</h1>
       <p className="mt-3 max-w-xl text-ink-600">{t('hotelBlurb')}</p>
+      <p className="mt-4 max-w-xl text-sm text-gold-600">{t('priceNote')}</p>
+
       <div className="mt-12 space-y-16">
-        <ServiceGrid services={hotels as ServiceCard[]} locale={locale} />
-        <ServiceGrid services={apartments as ServiceCard[]} locale={locale} />
+        <ServiceGrid services={hotels as unknown as ServiceCard[]} locale={locale} />
+        <ServiceGrid services={apartments as unknown as ServiceCard[]} locale={locale} />
       </div>
     </div>
   );

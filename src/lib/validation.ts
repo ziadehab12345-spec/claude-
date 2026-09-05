@@ -24,70 +24,49 @@ const time = z
   .regex(/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/, 'Must be a valid HH:MM time');
 
 export const serviceTypeSchema = z.enum(['car', 'hotel', 'apartment', 'fasttrack']);
-export const bookingStatusSchema = z.enum(['pending', 'confirmed', 'cancelled', 'completed']);
-export const paymentStatusSchema = z.enum(['unpaid', 'partial', 'paid']);
+export const inquiryStatusSchema = z.enum(['new', 'contacted', 'confirmed', 'closed']);
+export const inquirySourceSchema = z.enum(['website', 'whatsapp', 'phone', 'staff_manual']);
 export const roleSchema = z.enum(['admin', 'staff']);
 
-export const dateRangeSchema = z
-  .object({ startDate: dateString, endDate: dateString })
-  .refine((v) => v.endDate > v.startDate, {
-    message: 'end_date must be after start_date',
-    path: ['endDate'],
-  });
-
-export const availabilityQuerySchema = z.object({
-  serviceId: z.uuid().optional(),
-  serviceSlug: z.string().trim().min(1).max(120).optional(),
-  startDate: dateString,
-  endDate: dateString,
-});
-
-export const calendarQuerySchema = z.object({
-  from: dateString,
-  to: dateString,
-  serviceType: serviceTypeSchema.optional(),
-  serviceId: z.uuid().optional(),
-});
-
-/** What the public booking form may send. Price and status are NOT accepted. */
-export const publicBookingSchema = z.object({
-  unitId: z.uuid(),
+/**
+ * What the public request form may send.
+ *
+ * Only the name and phone are required — the office needs a way to call back
+ * and nothing else. Dates are a preference, not a reservation, so they are
+ * optional and are never checked against a calendar.
+ */
+export const publicInquirySchema = z.object({
+  serviceId: z.uuid().optional().nullable(),
   customerName: name,
   customerPhone: phone,
   customerEmail: optionalEmail,
-  startDate: dateString,
-  endDate: dateString,
-  flightTime: time.optional().nullable(),
+  country: z.string().trim().max(80).optional().nullable(),
+  preferredStart: z.union([dateString, z.literal('')]).optional().nullable(),
+  preferredEnd: z.union([dateString, z.literal('')]).optional().nullable(),
+  partySize: z.coerce.number().int().min(1).max(50).optional().nullable(),
   flightNumber: z.string().trim().max(20).optional().nullable(),
-  notes: z.string().trim().max(2000).optional(),
+  message: z.string().trim().max(2000).optional(),
 });
 
-/** Staff may additionally set price, status, payment state and internal notes. */
-export const staffBookingSchema = publicBookingSchema.extend({
-  priceMinorOverride: z.number().int().min(0).optional().nullable(),
-  status: z.enum(['pending', 'confirmed']).optional(),
-  paymentStatus: paymentStatusSchema.optional(),
-  paymentNotes: z.string().trim().max(2000).optional(),
+/** Staff logging a request that arrived by phone or WhatsApp. */
+export const staffInquirySchema = publicInquirySchema.extend({
+  source: inquirySourceSchema.optional(),
+  staffNotes: z.string().trim().max(2000).optional(),
 });
 
-export const updateBookingSchema = z.object({
-  customerName: name.optional(),
-  customerPhone: phone.optional(),
-  customerEmail: optionalEmail,
-  priceMinor: z.number().int().min(0).optional(),
-  paymentStatus: paymentStatusSchema.optional(),
-  paymentNotes: z.string().trim().max(2000).optional(),
-  notes: z.string().trim().max(2000).optional(),
-  flightTime: time.optional().nullable(),
-  flightNumber: z.string().trim().max(20).optional().nullable(),
-  startDate: dateString.optional(),
-  endDate: dateString.optional(),
-  unitId: z.uuid().optional(),
+export const updateInquirySchema = z.object({
+  status: inquiryStatusSchema.optional(),
+  staffNotes: z.string().trim().max(2000).optional(),
 });
 
-export const statusChangeSchema = z.object({
-  status: bookingStatusSchema,
-  reason: z.string().trim().max(500).optional(),
+export const inquiryListQuerySchema = z.object({
+  status: z.string().optional(),
+  serviceId: z.uuid().optional(),
+  search: z.string().trim().max(120).optional(),
+  from: dateString.optional(),
+  to: dateString.optional(),
+  limit: z.coerce.number().int().min(1).max(200).optional(),
+  offset: z.coerce.number().int().min(0).optional(),
 });
 
 export const loginSchema = z.object({
@@ -97,6 +76,10 @@ export const loginSchema = z.object({
 
 export const serviceSchema = z.object({
   type: serviceTypeSchema,
+  highlights: z
+    .array(z.object({ ar: z.string().trim().max(200), en: z.string().trim().max(200) }))
+    .max(12)
+    .optional(),
   slug: z
     .string()
     .trim()
@@ -109,31 +92,12 @@ export const serviceSchema = z.object({
   nameEn: z.string().trim().min(1).max(200),
   descriptionAr: z.string().trim().max(4000).optional(),
   descriptionEn: z.string().trim().max(4000).optional(),
-  basePriceMinor: z.number().int().min(0),
   imageUrl: z.union([z.url(), z.literal('')]).optional().nullable(),
   sortOrder: z.number().int().optional(),
   active: z.boolean().optional(),
 });
 
 export const serviceUpdateSchema = serviceSchema.partial();
-
-export const unitSchema = z.object({
-  serviceId: z.uuid(),
-  identifier: z.string().trim().min(1).max(120),
-  labelAr: z.string().trim().max(200).optional(),
-  labelEn: z.string().trim().max(200).optional(),
-  attributes: z.record(z.string(), z.unknown()).optional(),
-  active: z.boolean().optional(),
-});
-
-export const unitUpdateSchema = unitSchema.partial().omit({ serviceId: true });
-
-export const unitBlockSchema = z.object({
-  unitId: z.uuid(),
-  startDate: dateString,
-  endDate: dateString,
-  reason: z.string().trim().max(500).optional(),
-});
 
 export const createUserSchema = z.object({
   name: name,
@@ -152,14 +116,3 @@ export const updateUserSchema = z.object({
   password: z.string().min(12).max(200).optional(),
 });
 
-export const bookingListQuerySchema = z.object({
-  status: z.string().optional(),
-  paymentStatus: z.string().optional(),
-  serviceType: serviceTypeSchema.optional(),
-  serviceId: z.uuid().optional(),
-  from: dateString.optional(),
-  to: dateString.optional(),
-  search: z.string().trim().max(120).optional(),
-  limit: z.coerce.number().int().min(1).max(200).optional(),
-  offset: z.coerce.number().int().min(0).optional(),
-});

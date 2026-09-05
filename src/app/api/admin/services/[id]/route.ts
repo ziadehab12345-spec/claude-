@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, toJsonb } from '@/lib/db';
 import { ok, route, parseJson, requireSession } from '@/lib/api';
 import { serviceUpdateSchema } from '@/lib/validation';
 import { recordAudit } from '@/lib/audit';
@@ -28,7 +28,7 @@ export const PATCH = route(async (req: Request, ctx: { params: Promise<{ id: str
   if (input.nameEn !== undefined) patch.name_en = input.nameEn;
   if (input.descriptionAr !== undefined) patch.description_ar = input.descriptionAr;
   if (input.descriptionEn !== undefined) patch.description_en = input.descriptionEn;
-  if (input.basePriceMinor !== undefined) patch.base_price_minor = input.basePriceMinor;
+  if (input.highlights !== undefined) patch.highlights = toJsonb(input.highlights);
   if (input.imageUrl !== undefined) patch.image_url = input.imageUrl || null;
   if (input.sortOrder !== undefined) patch.sort_order = input.sortOrder;
   if (input.active !== undefined) patch.active = input.active;
@@ -42,18 +42,12 @@ export const PATCH = route(async (req: Request, ctx: { params: Promise<{ id: str
     .returningAll()
     .executeTakeFirstOrThrow();
 
-  const priceChanged = Number(before.base_price_minor) !== Number(service.base_price_minor);
   await recordAudit(db, {
     actorUserId: user.id,
-    action: priceChanged ? 'service.price_changed' : 'service.updated',
+    action: input.active !== undefined ? 'service.visibility_changed' : 'service.updated',
     entity: 'service',
     entityId: id,
-    details: priceChanged
-      ? {
-          from_minor: Number(before.base_price_minor),
-          to_minor: Number(service.base_price_minor),
-        }
-      : { fields: Object.keys(patch) },
+    details: { fields: Object.keys(patch), active: service.active },
   });
 
   return ok(service);

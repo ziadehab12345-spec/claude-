@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { SESSION_COOKIE, readSessionToken, type SessionUser } from './auth';
+import { SESSION_COOKIE, readSessionToken, type SessionUser } from './session-token';
 
 /** Reads the signed session cookie on the server. Returns null when signed out. */
 export async function getSessionUser(): Promise<SessionUser | null> {
