@@ -1,4 +1,4 @@
-import { db, toJsonb } from '@/lib/db';
+import { db } from '@/lib/db';
 import { created, ok, route, parseJson, requireSession } from '@/lib/api';
 import { serviceSchema } from '@/lib/validation';
 import { listAllServices } from '@/lib/services';
@@ -10,7 +10,8 @@ export const dynamic = 'force-dynamic';
 /** GET /api/admin/services — full catalogue including inactive services. */
 export const GET = route(async (req: Request) => {
   await requireSession(req);
-  return ok(await listAllServices(db));
+  const rows = await listAllServices(db);
+  return ok(rows.map((r) => ({ ...r, unit_count: Number(r.unit_count) })));
 });
 
 /** POST /api/admin/services — create a bookable service. Admin only. */
@@ -30,7 +31,7 @@ export const POST = route(async (req: Request) => {
         name_en: input.nameEn,
         description_ar: input.descriptionAr ?? '',
         description_en: input.descriptionEn ?? '',
-        highlights: toJsonb(input.highlights ?? []) as never,
+        base_price_minor: input.basePriceMinor,
         image_url: input.imageUrl || null,
         sort_order: input.sortOrder ?? 0,
         active: input.active ?? true,
@@ -43,7 +44,7 @@ export const POST = route(async (req: Request) => {
       action: 'service.created',
       entity: 'service',
       entityId: service.id,
-      details: { slug: service.slug, type: service.type },
+      details: { slug: service.slug, base_price_minor: input.basePriceMinor },
     });
 
     return created(service);

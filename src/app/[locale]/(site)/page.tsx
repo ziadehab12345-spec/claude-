@@ -46,7 +46,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             {t('heroSubtitle')}
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link href="/request" className="btn btn-gold">
+            <Link href="/fast-track" className="btn btn-gold">
               {t('heroCta')}
             </Link>
             <a
@@ -91,7 +91,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <h3 className="text-xl text-ink-900">{s(type)}</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-600">{s(`${type}Blurb`)}</p>
               <span className="mt-5 inline-block text-xs font-semibold tracking-[0.14em] text-gold-600 uppercase">
-                {s(type)} →
+                {s('viewOptions')} →
               </span>
             </Link>
           ))}

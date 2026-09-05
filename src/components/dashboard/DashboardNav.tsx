@@ -14,11 +14,12 @@ export function DashboardNav({ name, role }: { name: string; role: UserRole }) {
   const locale = useLocale();
 
   const links = [
-    { href: '/dashboard', label: t('inbox') },
-    { href: '/dashboard/log', label: t('logInquiry') },
+    { href: '/dashboard', label: t('bookings') },
+    { href: '/dashboard/calendar', label: t('calendar') },
+    { href: '/dashboard/new', label: t('newBooking') },
     ...(role === 'admin'
       ? [
-          { href: '/dashboard/services', label: t('services') },
+          { href: '/dashboard/inventory', label: t('inventory') },
           { href: '/dashboard/staff', label: t('staff') },
         ]
       : []),

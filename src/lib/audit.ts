@@ -4,7 +4,7 @@ export interface AuditEntry {
   actorUserId?: string | null;
   actorLabel?: string;
   action: string;
-  entity: 'inquiry' | 'service' | 'user';
+  entity: 'booking' | 'service' | 'unit' | 'user' | 'unit_block';
   entityId: string;
   details?: Record<string, unknown>;
 }

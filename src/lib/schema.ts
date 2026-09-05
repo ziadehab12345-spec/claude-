@@ -12,12 +12,12 @@ import type { ColumnType, Generated, Selectable, Insertable, Updateable } from '
 
 export type UserRole = 'admin' | 'staff';
 export type ServiceType = 'car' | 'hotel' | 'apartment' | 'fasttrack';
-/** Where an inquiry is in the office's follow-up. */
-export type InquiryStatus = 'new' | 'contacted' | 'confirmed' | 'closed';
-export type InquirySource = 'website' | 'whatsapp' | 'phone' | 'staff_manual';
+export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
+export type BookingSource = 'online' | 'staff_manual';
+export type PaymentStatus = 'unpaid' | 'partial' | 'paid';
 
-export const INQUIRY_STATUSES: readonly InquiryStatus[] = ['new', 'contacted', 'confirmed', 'closed'];
-export const INQUIRY_SOURCES: readonly InquirySource[] = ['website', 'whatsapp', 'phone', 'staff_manual'];
+/** Statuses that occupy a unit. Must match the WHERE clause of bookings_no_overlap. */
+export const ACTIVE_BOOKING_STATUSES: readonly BookingStatus[] = ['pending', 'confirmed'];
 
 /** Dates are handled as 'YYYY-MM-DD' strings end to end. See src/lib/dates.ts. */
 type DateString = ColumnType<string, string, string>;
@@ -58,6 +58,8 @@ export interface ServicesTable {
   description_en: Generated<string>;
   /** Bullet list of inclusions: [{ ar, en }, …]. See migration 0002. */
   highlights: Generated<ServiceHighlight[]>;
+  base_price_minor: string | number | bigint;
+  currency: Generated<string>;
   image_url: string | null;
   sort_order: Generated<number>;
   active: Generated<boolean>;
@@ -65,26 +67,54 @@ export interface ServicesTable {
   updated_at: Timestamp;
 }
 
-export interface InquiriesTable {
+export interface UnitsTable {
+  id: Generated<string>;
+  service_id: string;
+  identifier: string;
+  label_ar: Generated<string>;
+  label_en: Generated<string>;
+  attributes: Generated<Record<string, unknown>>;
+  active: Generated<boolean>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+
+export interface BookingsTable {
   id: Generated<string>;
   reference: string;
-  service_id: string | null;
-  service_label: Generated<string>;
+  unit_id: string;
+  service_id: string;
   customer_name: string;
   customer_phone: string;
   customer_email: string | null;
-  country: string | null;
-  preferred_start: DateString | null;
-  preferred_end: DateString | null;
-  party_size: number | null;
+  start_date: DateString;
+  end_date: DateString;
+  /** Generated column — never written by the application. */
+  occupancy: ColumnType<string, never, never>;
+  flight_time: string | null;
   flight_number: string | null;
-  message: Generated<string>;
-  status: Generated<InquiryStatus>;
-  source: Generated<InquirySource>;
-  staff_notes: Generated<string>;
-  handled_by_staff_id: string | null;
+  status: Generated<BookingStatus>;
+  source: BookingSource;
+  price_minor: string | number | bigint;
+  currency: Generated<string>;
+  price_overridden: Generated<boolean>;
+  payment_status: Generated<PaymentStatus>;
+  payment_notes: Generated<string>;
+  notes: Generated<string>;
+  created_by_staff_id: string | null;
   created_at: Timestamp;
   updated_at: Timestamp;
+}
+
+export interface UnitBlocksTable {
+  id: Generated<string>;
+  unit_id: string;
+  start_date: DateString;
+  end_date: DateString;
+  occupancy: ColumnType<string, never, never>;
+  reason: Generated<string>;
+  created_by_staff_id: string | null;
+  created_at: Timestamp;
 }
 
 export interface AuditLogsTable {
@@ -107,7 +137,9 @@ export interface RateLimitsTable {
 export interface Database {
   users: UsersTable;
   services: ServicesTable;
-  inquiries: InquiriesTable;
+  units: UnitsTable;
+  bookings: BookingsTable;
+  unit_blocks: UnitBlocksTable;
   audit_logs: AuditLogsTable;
   rate_limits: RateLimitsTable;
 }
@@ -117,5 +149,7 @@ export type NewUser = Insertable<UsersTable>;
 export type Service = Selectable<ServicesTable>;
 export type NewService = Insertable<ServicesTable>;
 export type ServiceUpdate = Updateable<ServicesTable>;
-export type Inquiry = Selectable<InquiriesTable>;
-export type NewInquiry = Insertable<InquiriesTable>;
+export type Unit = Selectable<UnitsTable>;
+export type NewUnit = Insertable<UnitsTable>;
+export type Booking = Selectable<BookingsTable>;
+export type UnitBlock = Selectable<UnitBlocksTable>;

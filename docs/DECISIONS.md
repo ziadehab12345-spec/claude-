@@ -7,75 +7,53 @@ a decision. Nothing here was invented to fill a gap.
 
 ## Confirmed facts
 
-Still standing:
-
-- Business: مكتب أهل كايرو, a VIP concierge and reservations office in Cairo.
+- Business: مكتب أهل كايرو, a booking and reservations office in Cairo.
 - Services: Airport VIP Fast Track (Classic, Golf Cart, VIP Personal), luxury
   car rental with a bilingual driver, partner five-star hotels, serviced
-  apartments and penthouses, and executive VIP studios.
+  apartments and penthouses.
 - Positioning: private VIP concierge for Gulf family travellers. Privacy,
   security and bilingual staff, not a budget self-serve rental brand.
-- The office confirms and arranges everything itself, by phone and WhatsApp.
+- Two booking channels: the customer books on the site, or staff enter a booking
+  taken by WhatsApp or phone.
+- Payment is offline only. Staff record payment status by hand. No gateway in v1.
 - Arabic and English from day one, with real RTL and LTR layouts.
+- The office holds its own inventory for cars, apartments **and** hotels, so all
+  three need a real availability engine, not a referral queue.
 - Catalogue: twelve car models across five categories; Four Seasons, Fairmont
-  and Marriott Nile City; Zamalek and New Cairo apartments; executive studios.
+  and Marriott Nile City; Zamalek and New Cairo apartments.
 - Contact: +20 122 233 2929, Cairo.
-
-### Superseded, kept so the change is visible
-
-These were stated in the original specification and are no longer true of this
-product. They are recorded rather than deleted, so nobody re-derives them from
-the old document.
-
-| Was | Now |
-|---|---|
-| "The office holds its own allotment for cars, apartments and hotels, so all three need a real availability engine." | Withdrawn. The office does not hold sellable inventory here. No availability engine. |
-| "Customer books directly on the site" as a booking channel. | The site takes a request. The office confirms and books. |
-| "Payment is offline only; staff record payment status by hand." | No payment state exists. The office handles money entirely outside this system. |
-| "Admin sets a base price per service; staff can override per booking." | No price exists anywhere in the system. |
-| Currency assumed EGP. | Moot — nothing is priced. |
-
-## Scope change — September 2026
-
-The office confirmed it does not want to publish prices and does not hold
-per-unit inventory to sell. The product is therefore a **service showcase with
-a contact flow**, not a booking platform.
-
-The availability engine built earlier — a Postgres `EXCLUDE USING gist`
-constraint that made double-booking impossible, with 38 tests behind it — was
-removed rather than left in place unused. Dead machinery is a maintenance
-liability and a false promise to whoever reads the code next. It is intact in
-git history under *"Add data model, availability engine and booking API"* and
-restorable if the office later holds its own allotment.
 
 ## Decisions taken during the build
 
 | # | Decision | Reasoning |
 |---|---|---|
-| 1 | A request is a record and a callback, never a reservation | The office confirms availability itself. Any hint of a held date on the public site would be a promise the system cannot keep. |
-| 2 | Only a name and a phone number are required | That is all the office needs to call back. Every extra required field costs real enquiries. |
-| 3 | Requests are stored, not just handed to WhatsApp | A WhatsApp-only button loses every guest who does not complete the handoff, and leaves the office no record, no follow-up list and nothing to measure. |
-| 4 | WhatsApp and phone sit beside the form on every page | Most Gulf guests prefer to message. The form is for the ones who do not, not a toll gate in front of the office. |
-| 5 | Any inquiry status may follow any other | This is the office's to-do list, not a state machine guarding money or inventory. One closed by mistake should reopen in one click. |
-| 6 | An inquiry snapshots the service name at the time it arrived | So the record still reads correctly after the catalogue is renamed, and survives the service being deleted. |
-| 7 | Dates on a request are optional and unvalidated against any calendar | They are a preference. Many guests may ask about the same week. |
-| 8 | No price exists anywhere in the system | Not a column, not a field. A price that lives nowhere cannot be shown by accident or drift from what the office actually charges. |
-| 9 | Dates as `YYYY-MM-DD` strings end to end | A `Date` object in a UTC container shifts a Cairo calendar day by one. |
-| 10 | Rate limiting stored in Postgres | In-memory counters give an attacker N times the allowance on serverless, one bucket per instance. |
-| 11 | Protected routes re-read the account from the database | An admin who deactivates a staff member expects it to take effect now, not at token expiry. |
-| 12 | Session tokens in a module separate from password hashing | The middleware runs on the Edge and may only use Web Crypto. Sharing a module with bcrypt dragged Node crypto into every request. |
-| 13 | Arabic is the default locale | Egyptian office, Gulf customers. English is a full alternative, not a fallback. |
-| 14 | Testimonials shown in Arabic in both locales | They are three real customers' words. Rewording them in English would put sentences in their mouths. |
+| 1 | Half-open date ranges, `[start, end)`, for every service type | Matches the hotel check-out convention and maps directly onto the Postgres `daterange` overlap operator. One rule, no per-type special cases. |
+| 2 | Fast Track capacity modelled as N unit rows, not a counter | Lets every service share one availability engine and one database constraint. A second code path is a second place to get double-booking wrong. |
+| 3 | Kysely with hand-written SQL migrations, not Prisma | Prisma cannot express the exclusion constraint or the generated column the business depends on, so its schema would drift and a future migration could drop the very constraint that prevents double-booking. |
+| 4 | Money stored as integer minor units | Floating point must never touch a price. |
+| 5 | Dates as `YYYY-MM-DD` strings end to end | A `Date` object in a UTC container shifts a Cairo calendar day by one. |
+| 6 | `cancelled` and `completed` are terminal statuses | Re-opening a cancelled booking is not a state change: the dates were released and may already belong to someone else. Staff create a new booking, which goes through the availability check. |
+| 7 | Rate limiting stored in Postgres | In-memory counters give an attacker N times the allowance on serverless, one bucket per instance. |
+| 8 | Protected routes re-read the account from the database | An admin who deactivates a staff member expects it to take effect now, not at token expiry. |
+| 9 | Seeded prices are zero and the UI shows "price on request" | No real price has been confirmed. Displaying a made-up number would be a false claim to a customer; displaying zero would be a wrong one. |
+| 10 | Seeded units are named `PLACEHOLDER-n` | Real plates, room numbers and rep counts are unknown. The name makes it impossible to mistake them for real inventory, and the dashboard warns while any remain. |
+| 11 | Arabic is the default locale | Egyptian office, Gulf customers. English is a full alternative, not a fallback. |
+| 12 | The confirmation page shows only the reference | A guessed reference should reveal nothing. Full detail sits behind the lookup, which also requires the phone number on the booking. |
+| 13 | Price overrides are admin-only | Staff record payment; they do not set amounts. The API discards a staff override rather than trusting the client. |
 
 ## Assumptions still standing
 
+These were assumed to keep the build moving and are safe to change. Each is a
+single edit, not a rewrite.
+
 | Assumption | Where it lives | Cost to change |
 |---|---|---|
+| Currency is EGP | `services.currency`, defaulted per row | Low — the column already exists per service; multi-currency display would need a formatting pass. |
 | Two roles, admin and staff | `user_role` enum | Low for another role, higher for per-resource permissions. |
-| Nobody is alerted when a request arrives | — | Requests wait in the dashboard until someone looks. An email or WhatsApp alert is additive; the inquiry service already has the hook point at creation. |
-| Sessions last 12 hours | `SESSION_TTL_SECONDS` in `src/lib/session-token.ts` | Trivial. |
-| 8 requests per IP per hour | `RATE_LIMIT` in the inquiries route | Trivial. |
-| Images are hotlinked from Pexels | `db/catalogue.ts` | Low, but worth doing before go-live: the site currently depends on a third-party host staying available. |
+| Cars bill per day, stays per night, Fast Track a flat fee | `computePrice` in `src/lib/bookings.ts` | Low. Seasonal or tiered pricing would need a rates table. |
+| No automated notifications in v1 | — | Adding WhatsApp or email is additive; the booking service already has the hook point at creation and status change. |
+| A booking may run up to 365 days | `MAX_BOOKING_DAYS` | Trivial. |
+| Sessions last 12 hours | `SESSION_TTL_SECONDS` in `src/lib/auth.ts` | Trivial. |
 
 ## Imported from the existing site (September 2026)
 
