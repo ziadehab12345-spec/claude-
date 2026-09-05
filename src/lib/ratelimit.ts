@@ -62,7 +62,14 @@ export async function pruneRateLimits(db: Queryable): Promise<void> {
     .execute();
 }
 
-/** Best-effort client IP from proxy headers. */
+/**
+ * Best-effort client IP from proxy headers.
+ *
+ * These headers are only trustworthy behind a proxy that overwrites them —
+ * Vercel and most managed platforms do. On a self-hosted deployment, make sure
+ * the reverse proxy sets x-forwarded-for rather than passing a client value
+ * through, or the limit can be evaded by forging the header.
+ */
 export function clientIp(headers: Headers): string {
   const forwarded = headers.get('x-forwarded-for');
   if (forwarded) return forwarded.split(',')[0]!.trim();

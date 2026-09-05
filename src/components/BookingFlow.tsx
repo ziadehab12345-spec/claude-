@@ -130,7 +130,9 @@ export function BookingFlow({
         throw new Error(body?.error?.message ?? e('generic'));
       }
 
-      router.push(`/booking/${body.data.reference}?phone=${encodeURIComponent(String(form.get('customerPhone') ?? ''))}`);
+      // Only the reference goes in the URL. Putting the phone number there
+      // would leave it in browser history, referrers and any shared link.
+      router.push(`/booking/${body.data.reference}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : e('generic'));
       setSubmitting(false);

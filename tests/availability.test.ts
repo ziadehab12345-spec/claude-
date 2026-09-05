@@ -373,3 +373,50 @@ describe('the dashboard calendar', () => {
     expect(cells[1]!.customerName).toBe('Test Customer');
   });
 });
+
+describe('unit blocks and bookings cannot contradict each other', () => {
+  it('lets a block sit next to a booking without overlapping it', async () => {
+    const service = await makeService(db);
+    const unit = await makeUnit(db, service.id);
+    const staff = await makeStaff(db);
+
+    await createBooking(
+      { ...customer, unitId: unit.id, startDate: '2026-10-01', endDate: '2026-10-05', source: 'online' },
+      db,
+    );
+
+    await db
+      .insertInto('unit_blocks')
+      .values({
+        unit_id: unit.id,
+        start_date: '2026-10-05',
+        end_date: '2026-10-08',
+        created_by_staff_id: staff.id,
+      })
+      .execute();
+
+    const free = await findAvailableUnits(db, {
+      serviceId: service.id,
+      startDate: '2026-10-08',
+      endDate: '2026-10-09',
+    });
+    expect(free).toHaveLength(1);
+  });
+
+  it('refuses two overlapping blocks on the same unit', async () => {
+    const service = await makeService(db);
+    const unit = await makeUnit(db, service.id);
+
+    await db
+      .insertInto('unit_blocks')
+      .values({ unit_id: unit.id, start_date: '2026-10-01', end_date: '2026-10-05' })
+      .execute();
+
+    await expect(
+      db
+        .insertInto('unit_blocks')
+        .values({ unit_id: unit.id, start_date: '2026-10-04', end_date: '2026-10-06' })
+        .execute(),
+    ).rejects.toMatchObject({ code: '23P01' });
+  });
+});
