@@ -7,21 +7,33 @@ a decision. Nothing here was invented to fill a gap.
 
 ## Confirmed facts
 
-- Business: مكتب أهل كايرو, a booking and reservations office in Cairo.
+Still standing:
+
+- Business: مكتب أهل كايرو, a VIP concierge and reservations office in Cairo.
 - Services: Airport VIP Fast Track (Classic, Golf Cart, VIP Personal), luxury
   car rental with a bilingual driver, partner five-star hotels, serviced
-  apartments and penthouses.
+  apartments and penthouses, and executive VIP studios.
 - Positioning: private VIP concierge for Gulf family travellers. Privacy,
   security and bilingual staff, not a budget self-serve rental brand.
-- Two booking channels: the customer books on the site, or staff enter a booking
-  taken by WhatsApp or phone.
-- Payment is offline only. Staff record payment status by hand. No gateway in v1.
+- The office confirms and arranges everything itself, by phone and WhatsApp.
 - Arabic and English from day one, with real RTL and LTR layouts.
-- The office holds its own inventory for cars, apartments **and** hotels, so all
-  three need a real availability engine, not a referral queue.
 - Catalogue: twelve car models across five categories; Four Seasons, Fairmont
-  and Marriott Nile City; Zamalek and New Cairo apartments.
+  and Marriott Nile City; Zamalek and New Cairo apartments; executive studios.
 - Contact: +20 122 233 2929, Cairo.
+
+### Superseded, kept so the change is visible
+
+These were stated in the original specification and are no longer true of this
+product. They are recorded rather than deleted, so nobody re-derives them from
+the old document.
+
+| Was | Now |
+|---|---|
+| "The office holds its own allotment for cars, apartments and hotels, so all three need a real availability engine." | Withdrawn. The office does not hold sellable inventory here. No availability engine. |
+| "Customer books directly on the site" as a booking channel. | The site takes a request. The office confirms and books. |
+| "Payment is offline only; staff record payment status by hand." | No payment state exists. The office handles money entirely outside this system. |
+| "Admin sets a base price per service; staff can override per booking." | No price exists anywhere in the system. |
+| Currency assumed EGP. | Moot — nothing is priced. |
 
 ## Scope change — September 2026
 
