@@ -30,7 +30,8 @@ export async function makeService(
     .values({
       type: opts.type ?? 'car',
       slug: `test-service-${slugCounter}`,
-      category: 'Test Category',
+      category_en: 'Test Category',
+      category_ar: 'فئة اختبار',
       name_en: `Test Service ${slugCounter}`,
       name_ar: `خدمة ${slugCounter}`,
       base_price_minor: opts.basePriceMinor ?? 100_000,

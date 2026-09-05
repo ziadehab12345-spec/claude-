@@ -1,8 +1,9 @@
 {
   "brand": {
     "name": "Ahl Cairo",
-    "tagline": "Private VIP concierge in Cairo",
-    "office": "Ahl Cairo Reservations Office"
+    "tagline": "Luxury VIP services in Egypt",
+    "office": "Ahl Cairo Reservations Office",
+    "welcome": "Welcome to Egypt, your second home"
   },
   "nav": {
     "home": "Home",
@@ -17,18 +18,18 @@
     "myBooking": "My booking"
   },
   "home": {
-    "heroTitle": "Cairo, handled quietly",
-    "heroSubtitle": "Airport fast track, chauffeured cars and private residences, arranged by one office for families who value discretion.",
-    "heroCta": "Start a booking",
-    "heroSecondary": "Speak to us on WhatsApp",
-    "servicesTitle": "What we arrange",
-    "servicesSubtitle": "Four services, one point of contact, in Arabic and English.",
-    "trustPrivacy": "Discretion",
-    "trustPrivacyBody": "Your itinerary stays between you and the office. No third-party resellers.",
-    "trustBilingual": "Bilingual throughout",
-    "trustBilingualBody": "Every driver and representative speaks Arabic and English.",
-    "trustFamily": "Built for families",
-    "trustFamilyBody": "Vehicles, residences and airport handling chosen for families travelling together.",
+    "heroTitle": "Service worthy of you and your family",
+    "heroSubtitle": "A VIP travel and concierge company for our guests from the Gulf. Luxury airport reception, chauffeured cars, and hotel and serviced apartment bookings held to the highest standards of privacy and security.",
+    "heroCta": "Request your service",
+    "heroSecondary": "Message us on WhatsApp",
+    "servicesTitle": "Our services",
+    "servicesSubtitle": "Three services, one point of contact, in Arabic and English.",
+    "trustPrivacy": "Complete privacy",
+    "trustPrivacyBody": "Absolute discretion for you and your family in every detail, with privacy glass on our cars.",
+    "trustBilingual": "Around the clock",
+    "trustBilingualBody": "A team available day and night, with licensed bilingual drivers who also act as guides.",
+    "trustFamily": "Five-star service",
+    "trustFamilyBody": "An elite fleet of the newest luxury cars under continuous maintenance, and stays in the finest secure locations.",
     "howTitle": "How a booking works",
     "howStep1": "Choose a service and your dates",
     "howStep1Body": "You only ever see what is genuinely free on those dates.",
@@ -44,10 +45,10 @@
     "car": "Chauffeured Fleet",
     "hotel": "Partner Hotels",
     "apartment": "Serviced Apartments",
-    "fasttrackBlurb": "Met at the aircraft door, through passport control, out to your car.",
-    "carBlurb": "Luxury sedans, family vans and 4x4s, each with a bilingual driver.",
-    "hotelBlurb": "Rooms held with our five-star partners on the Nile.",
-    "apartmentBlurb": "Private serviced apartments in Zamalek and New Cairo.",
+    "fasttrackBlurb": "A royal welcome from the moment you land — complete comfort, absolute privacy.",
+    "carBlurb": "A luxury fleet with a professional bilingual driver — full privacy, royal comfort.",
+    "hotelBlurb": "Luxury stays in the finest secure locations in Egypt.",
+    "apartmentBlurb": "Serviced apartments, penthouses and studios in Zamalek and New Cairo.",
     "from": "From",
     "priceOnRequest": "Price on request",
     "perDay": "per day",
@@ -55,8 +56,9 @@
     "perService": "per service",
     "viewOptions": "View options",
     "noneAvailable": "Nothing is listed here yet. Please contact the office.",
-    "includesDriver": "Includes a bilingual driver",
-    "unitsAvailable": "{count, plural, =0 {None available} one {1 available} other {# available}}"
+    "includesDriver": "All-inclusive 12 hours a day, with a bilingual driver",
+    "unitsAvailable": "{count, plural, =0 {None available} one {1 available} other {# available}}",
+    "whatsIncluded": "What the package includes"
   },
   "booking": {
     "checkAvailability": "Check availability",
@@ -116,12 +118,18 @@
     "notFound": "No booking matches that reference and phone number."
   },
   "about": {
-    "title": "About the office",
-    "body": "Ahl Cairo is a reservations office in Cairo arranging airport fast track, chauffeured cars and private residences for visiting families. Every booking is handled by the office directly, in Arabic or English.",
+    "title": "About Ahl Cairo",
+    "body": "Ahl Cairo is a VIP travel and concierge company founded to give our guests from the Gulf an exceptional experience. We are proud of our years serving Gulf families and our understanding of what they need: privacy, security and comfort.",
     "contactTitle": "Contact",
     "phone": "Phone and WhatsApp",
     "location": "Cairo, Egypt",
-    "hours": "The office answers WhatsApp messages throughout the day."
+    "hours": "The office answers WhatsApp messages throughout the day.",
+    "body2": "Our coordinators and professional drivers combine competence, good taste and complete respect for our guests’ privacy. We treat every client as family, because Egypt is your second home.",
+    "whyTitle": "Why choose Ahl Cairo",
+    "why1": "A team available for you day and night",
+    "why2": "Absolute privacy for you and your family in every detail",
+    "why3": "Licensed, professional bilingual drivers and guides",
+    "why4": "The newest luxury cars, continuously maintained"
   },
   "status": {
     "pending": "Awaiting confirmation",
@@ -232,5 +240,28 @@
     "yes": "Yes",
     "no": "No",
     "currency": "EGP"
+  },
+  "stats": {
+    "yearsValue": "15+",
+    "yearsLabel": "years of experience",
+    "clientsValue": "5000+",
+    "clientsLabel": "VIP clients",
+    "supportValue": "24/7",
+    "supportLabel": "continuous support",
+    "fleetValue": "50+",
+    "fleetLabel": "luxury vehicles"
+  },
+  "testimonials": {
+    "title": "What our guests say",
+    "subtitle": "The trust of our Gulf guests is our greatest achievement",
+    "q1": "خدمة تستحق كل كلمة من الثناء. الاستقبال في المطار كان ممتاز والسائق محترم جداً. خصوصية تامة لعائلتي. شكراً أهل كايرو.",
+    "n1": "Abu Abdullah",
+    "c1": "Riyadh, Saudi Arabia",
+    "q2": "تعاملت معهم مرتين، المرة الثانية كانت أحسن من الأولى. الشقة في الزمالك كانت نظيفة وفخمة والخدمة على مدار الساعة. أنصح بهم بشدة.",
+    "n2": "Umm Khaled",
+    "c2": "Kuwait",
+    "q3": "خدمة الفاست تراك VIP وفّرت علينا وقت وجهد كبير. السيارة المرسيدس كانت نظيفة والسائق يعرف الطرق جيداً. خدمة فاخرة فعلاً.",
+    "n3": "Fahd Al-Otaibi",
+    "c3": "Doha, Qatar"
   }
 }

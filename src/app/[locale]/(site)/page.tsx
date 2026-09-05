@@ -19,6 +19,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale);
   const t = await getTranslations('home');
   const s = await getTranslations('services');
+  const brand = await getTranslations('brand');
+  const stats = await getTranslations('stats');
+  const tst = await getTranslations('testimonials');
 
   const services = await listPublicServices(db);
   const typesPresent = (['fasttrack', 'car', 'hotel', 'apartment'] as const).filter((type) =>
@@ -37,7 +40,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           }}
         />
         <div className="relative mx-auto max-w-6xl px-5 py-24 sm:py-32">
-          <h1 className="max-w-3xl text-4xl leading-tight sm:text-6xl">{t('heroTitle')}</h1>
+          <p className="eyebrow text-gold-300">{brand('welcome')}</p>
+          <h1 className="mt-3 max-w-3xl text-4xl leading-tight sm:text-6xl">{t('heroTitle')}</h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-200 sm:text-lg">
             {t('heroSubtitle')}
           </p>
@@ -55,6 +59,22 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </a>
           </div>
         </div>
+      </section>
+
+      <section className="border-b border-sand-200 bg-white">
+        <dl className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 py-12 sm:grid-cols-4">
+          {(['years', 'clients', 'support', 'fleet'] as const).map((k) => (
+            <div key={k} className="text-center">
+              <dt className="sr-only">{stats(`${k}Label`)}</dt>
+              <dd>
+                <span className="block font-display text-3xl text-gold-500" dir="ltr">
+                  {stats(`${k}Value`)}
+                </span>
+                <span className="mt-1 block text-xs text-ink-600">{stats(`${k}Label`)}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       <section className="mx-auto max-w-6xl px-5 py-20">
@@ -102,7 +122,27 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </ol>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 pb-20">
+      <section className="border-y border-sand-200 bg-sand-100">
+        <div className="mx-auto max-w-6xl px-5 py-20">
+          <h2 className="text-3xl">{tst('title')}</h2>
+          <p className="mt-2 text-ink-600">{tst('subtitle')}</p>
+          <div className="mt-10 grid gap-5 sm:grid-cols-3">
+            {([1, 2, 3] as const).map((n) => (
+              <figure key={n} className="card flex flex-col p-6">
+                <blockquote className="flex-1 text-sm leading-relaxed text-ink-700" dir="rtl" lang="ar">
+                  {tst(`q${n}`)}
+                </blockquote>
+                <figcaption className="mt-5 border-t border-sand-200 pt-4">
+                  <span className="block text-sm text-ink-900">{tst(`n${n}`)}</span>
+                  <span className="block text-xs text-ink-400">{tst(`c${n}`)}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 py-20">
         <div className="card flex flex-col items-start gap-4 bg-ink-900 p-10 text-sand-50 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-2xl text-sand-50">{t('ctaTitle')}</h2>

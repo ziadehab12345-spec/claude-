@@ -22,7 +22,8 @@ export const PATCH = route(async (req: Request, ctx: { params: Promise<{ id: str
   const patch: Record<string, unknown> = {};
   if (input.type !== undefined) patch.type = input.type;
   if (input.slug !== undefined) patch.slug = input.slug;
-  if (input.category !== undefined) patch.category = input.category;
+  if (input.categoryEn !== undefined) patch.category_en = input.categoryEn;
+  if (input.categoryAr !== undefined) patch.category_ar = input.categoryAr;
   if (input.nameAr !== undefined) patch.name_ar = input.nameAr;
   if (input.nameEn !== undefined) patch.name_en = input.nameEn;
   if (input.descriptionAr !== undefined) patch.description_ar = input.descriptionAr;

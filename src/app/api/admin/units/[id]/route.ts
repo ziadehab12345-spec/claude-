@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, toJsonb } from '@/lib/db';
 import { ok, route, parseJson, requireSession } from '@/lib/api';
 import { unitUpdateSchema } from '@/lib/validation';
 import { recordAudit } from '@/lib/audit';
@@ -25,7 +25,7 @@ export const PATCH = route(async (req: Request, ctx: { params: Promise<{ id: str
   if (input.identifier !== undefined) patch.identifier = input.identifier;
   if (input.labelAr !== undefined) patch.label_ar = input.labelAr;
   if (input.labelEn !== undefined) patch.label_en = input.labelEn;
-  if (input.attributes !== undefined) patch.attributes = input.attributes;
+  if (input.attributes !== undefined) patch.attributes = toJsonb(input.attributes);
   if (input.active !== undefined) patch.active = input.active;
 
   if (Object.keys(patch).length === 0) return ok(before);

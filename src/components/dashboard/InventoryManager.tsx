@@ -10,7 +10,8 @@ interface ServiceRow {
   id: string;
   type: ServiceType;
   slug: string;
-  category: string;
+  category_en: string;
+  category_ar: string;
   name_en: string;
   name_ar: string;
   base_price_minor: number;
@@ -113,7 +114,7 @@ export function InventoryManager({
                 <div className="min-w-48 flex-1">
                   <p className="text-sm text-ink-900">{ar ? s.name_ar : s.name_en}</p>
                   <p className="text-xs text-ink-400">
-                    {svc(s.type)} · {s.category} · {serviceUnits.length} {t('unitsTitle')}
+                    {svc(s.type)} · {ar ? s.category_ar : s.category_en} · {serviceUnits.length} {t('unitsTitle')}
                   </p>
                 </div>
 

@@ -51,6 +51,18 @@ export function createDb(url: string = connectionString()): Kysely<Database> {
 export const db: Kysely<Database> =
   globalThis.__ahlDb ?? (globalThis.__ahlDb = createDb());
 
+/**
+ * Wraps a value for a jsonb column.
+ *
+ * node-postgres serialises a JS array as a Postgres array literal, not as
+ * JSON, so passing one straight into a jsonb column fails at the database.
+ * Stringifying first is what makes it land as JSON. Reads come back already
+ * parsed, so this is only needed on the way in.
+ */
+export function toJsonb(value: unknown): string {
+  return JSON.stringify(value);
+}
+
 export { sql };
 export type DB = Kysely<Database>;
 /**

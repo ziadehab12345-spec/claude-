@@ -35,8 +35,21 @@ export default async function BookPage({
         ← {t(service.type)}
       </Link>
       <h1 className="mt-3 text-4xl">{name}</h1>
-      {description && <p className="mt-3 max-w-xl text-ink-600">{description}</p>}
-      {service.type === 'car' && <p className="mt-2 text-sm text-gold-600">{t('includesDriver')}</p>}
+      {description && <p className="mt-3 max-w-xl leading-relaxed text-ink-600">{description}</p>}
+
+      {service.highlights.length > 0 && (
+        <div className="mt-6">
+          <p className="eyebrow">{t('whatsIncluded')}</p>
+          <ul className="mt-3 grid max-w-2xl gap-2 sm:grid-cols-2">
+            {service.highlights.map((h, i) => (
+              <li key={i} className="flex gap-2 text-sm text-ink-700">
+                <span aria-hidden className="text-gold-500">·</span>
+                <span>{locale === 'ar' ? h.ar : h.en}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="mt-12">
         <BookingFlow

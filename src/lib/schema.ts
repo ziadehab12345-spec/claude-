@@ -40,15 +40,24 @@ export interface UsersTable {
   updated_at: Timestamp;
 }
 
+/** One bullet in a service's inclusions list. */
+export interface ServiceHighlight {
+  ar: string;
+  en: string;
+}
+
 export interface ServicesTable {
   id: Generated<string>;
   type: ServiceType;
   slug: string;
-  category: string;
+  category_en: string;
+  category_ar: string;
   name_ar: string;
   name_en: string;
   description_ar: Generated<string>;
   description_en: Generated<string>;
+  /** Bullet list of inclusions: [{ ar, en }, …]. See migration 0002. */
+  highlights: Generated<ServiceHighlight[]>;
   base_price_minor: string | number | bigint;
   currency: Generated<string>;
   image_url: string | null;

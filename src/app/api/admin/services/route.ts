@@ -25,7 +25,8 @@ export const POST = route(async (req: Request) => {
       .values({
         type: input.type,
         slug: input.slug,
-        category: input.category,
+        category_en: input.categoryEn,
+        category_ar: input.categoryAr,
         name_ar: input.nameAr,
         name_en: input.nameEn,
         description_ar: input.descriptionAr ?? '',

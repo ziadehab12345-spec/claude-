@@ -10,6 +10,19 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     <div className="mx-auto max-w-2xl px-5 py-20">
       <h1 className="text-4xl">{t('title')}</h1>
       <p className="mt-5 leading-relaxed text-ink-600">{t('body')}</p>
+      <p className="mt-4 leading-relaxed text-ink-600">{t('body2')}</p>
+
+      <hr className="rule my-10" />
+
+      <h2 className="text-xl">{t('whyTitle')}</h2>
+      <ul className="mt-5 space-y-3">
+        {([1, 2, 3, 4] as const).map((n) => (
+          <li key={n} className="flex gap-3 text-sm text-ink-700">
+            <span aria-hidden className="text-gold-500">·</span>
+            <span>{t(`why${n}`)}</span>
+          </li>
+        ))}
+      </ul>
 
       <hr className="rule my-10" />
 

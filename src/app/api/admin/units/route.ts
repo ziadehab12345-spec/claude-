@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db, toJsonb } from '@/lib/db';
 import { created, ok, route, parseJson, parseQuery, requireSession } from '@/lib/api';
 import { unitSchema } from '@/lib/validation';
 import { recordAudit } from '@/lib/audit';
@@ -39,7 +39,7 @@ export const POST = route(async (req: Request) => {
         identifier: input.identifier,
         label_ar: input.labelAr ?? '',
         label_en: input.labelEn ?? '',
-        attributes: (input.attributes ?? {}) as never,
+        attributes: toJsonb(input.attributes ?? {}) as never,
         active: input.active ?? true,
       })
       .returningAll()

@@ -103,7 +103,8 @@ export const serviceSchema = z.object({
     .min(2)
     .max(120)
     .regex(/^[a-z0-9-]+$/, 'Slug may contain lowercase letters, numbers and hyphens only'),
-  category: z.string().trim().min(1).max(120),
+  categoryEn: z.string().trim().min(1).max(120),
+  categoryAr: z.string().trim().min(1).max(120),
   nameAr: z.string().trim().min(1).max(200),
   nameEn: z.string().trim().min(1).max(200),
   descriptionAr: z.string().trim().max(4000).optional(),
