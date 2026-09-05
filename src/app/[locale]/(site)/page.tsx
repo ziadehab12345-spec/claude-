@@ -49,7 +49,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               href={whatsappLink()}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-outline border-sand-300 text-sand-100 hover:bg-sand-50 hover:text-ink-900"
+              className="btn btn-outline-light"
             >
               {t('heroSecondary')}
             </a>

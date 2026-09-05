@@ -71,122 +71,140 @@ h1, h2, h3, .font-display {
 }
 
 /* Logical properties so the same rules work in RTL and LTR. */
-.field {
-  display: block;
-  width: 100%;
-  border: 1px solid var(--color-sand-300);
-  border-radius: var(--radius-card);
-  background: #fff;
-  padding: 0.625rem 0.75rem;
-  font: inherit;
-  color: inherit;
-}
-.field:focus {
-  border-color: var(--color-gold-400);
-  outline: none;
-  box-shadow: 0 0 0 3px rgb(201 167 101 / 0.18);
-}
-.field[aria-invalid='true'] {
-  border-color: var(--color-danger);
-}
+/*
+ * These live in the components layer on purpose. Without it they are emitted
+ * after Tailwind's utilities and win the cascade, so `md:hidden` on a `.btn`
+ * would not hide it and `text-sand-100` would not lighten it.
+ */
+@layer components {
 
-.label {
-  display: block;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--color-ink-700);
-  margin-block-end: 0.375rem;
-}
+  .field {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--color-sand-300);
+    border-radius: var(--radius-card);
+    background: #fff;
+    padding: 0.625rem 0.75rem;
+    font: inherit;
+    color: inherit;
+  }
+  .field:focus {
+    border-color: var(--color-gold-400);
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(201 167 101 / 0.18);
+  }
+  .field[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
 
-.hint {
-  font-size: 0.75rem;
-  color: var(--color-ink-400);
-  margin-block-start: 0.25rem;
-}
+  .label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-ink-700);
+    margin-block-end: 0.375rem;
+  }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: var(--radius-card);
-  padding: 0.6875rem 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
-}
-:lang(ar) .btn {
-  text-transform: none;
-  letter-spacing: 0;
-}
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.btn-primary {
-  background: var(--color-ink-900);
-  color: var(--color-sand-50);
-}
-.btn-primary:hover:not(:disabled) {
-  background: var(--color-ink-700);
-}
-.btn-gold {
-  background: var(--color-gold-400);
-  color: var(--color-ink-950);
-}
-.btn-gold:hover:not(:disabled) {
-  background: var(--color-gold-300);
-}
-.btn-outline {
-  border-color: var(--color-ink-700);
-  color: var(--color-ink-900);
-  background: transparent;
-}
-.btn-outline:hover:not(:disabled) {
-  background: var(--color-ink-900);
-  color: var(--color-sand-50);
-}
-.btn-ghost {
-  color: var(--color-ink-700);
-  background: transparent;
-  padding-inline: 0.75rem;
-}
-.btn-ghost:hover:not(:disabled) {
-  background: var(--color-sand-100);
-}
-.btn-sm {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.75rem;
-}
+  .hint {
+    font-size: 0.75rem;
+    color: var(--color-ink-400);
+    margin-block-start: 0.25rem;
+  }
 
-.card {
-  background: #fff;
-  border: 1px solid var(--color-sand-200);
-  border-radius: var(--radius-card);
-}
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-card);
+    padding: 0.6875rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  }
+  :lang(ar) .btn {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: var(--color-ink-900);
+    color: var(--color-sand-50);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--color-ink-700);
+  }
+  .btn-gold {
+    background: var(--color-gold-400);
+    color: var(--color-ink-950);
+  }
+  .btn-gold:hover:not(:disabled) {
+    background: var(--color-gold-300);
+  }
+  .btn-outline {
+    border-color: var(--color-ink-700);
+    color: var(--color-ink-900);
+    background: transparent;
+  }
+  .btn-outline:hover:not(:disabled) {
+    background: var(--color-ink-900);
+    color: var(--color-sand-50);
+  }
+  /* The same button on a dark section: light border and text, dark on hover. */
+  .btn-outline-light {
+    border-color: var(--color-sand-300);
+    color: var(--color-sand-100);
+    background: transparent;
+  }
+  .btn-outline-light:hover:not(:disabled) {
+    background: var(--color-sand-50);
+    color: var(--color-ink-900);
+  }
+  .btn-ghost {
+    color: var(--color-ink-700);
+    background: transparent;
+    padding-inline: 0.75rem;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--color-sand-100);
+  }
+  .btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
 
-.rule {
-  height: 1px;
-  background: var(--color-sand-200);
-  border: 0;
-}
+  .card {
+    background: #fff;
+    border: 1px solid var(--color-sand-200);
+    border-radius: var(--radius-card);
+  }
 
-/* Small caps eyebrow above a section heading. */
-.eyebrow {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-gold-600);
-}
-:lang(ar) .eyebrow {
-  letter-spacing: 0;
-  text-transform: none;
+  .rule {
+    height: 1px;
+    background: var(--color-sand-200);
+    border: 0;
+  }
+
+  /* Small caps eyebrow above a section heading. */
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-gold-600);
+  }
+  :lang(ar) .eyebrow {
+    letter-spacing: 0;
+    text-transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
