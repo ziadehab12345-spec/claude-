@@ -89,16 +89,26 @@ npm run db:reset    # drop and rebuild (refuses non-local databases)
 
 ## Before go-live
 
-The seed loads the confirmed service catalogue — twelve car models in five
-categories, three hotel partners, two apartment areas, three Fast Track tiers.
-It does **not** invent the two things nobody has confirmed:
+The seed loads the catalogue imported from the office's existing site: three
+Fast Track tiers with their advertised inclusions, twelve car models in five
+categories, three hotel partners, Zamalek and New Cairo apartments, and
+Executive VIP studios. Arabic copy is that site's own wording.
+
+That site publishes **no prices and no inventory counts**, so the seed does not
+invent them:
 
 1. **Prices.** Every service is seeded at zero. The public site shows
    "price on request" rather than a fabricated or zero amount. An admin sets
    real prices under Dashboard → Inventory.
-2. **Unit counts.** Each service gets `PLACEHOLDER-n` units. Replace them with
-   real plates, room numbers and rep slots. The inventory screen warns while any
-   placeholder remains.
+2. **Unit counts.** Each service gets `PLACEHOLDER-n` units. The only figure
+   the existing site gives is a fleet-wide "+50 luxury cars", which says nothing
+   about how many of any given model exist. Replace them with real plates, room
+   numbers and rep slots. The inventory screen warns while any placeholder
+   remains.
+
+`tests/catalogue.test.ts` fails if a price or a real-looking inventory count is
+ever added to the seed. See `docs/DECISIONS.md` for exactly what the existing
+site did and did not contain.
 
 Still open, none of which blocks development:
 

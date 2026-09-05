@@ -55,13 +55,54 @@ single edit, not a rewrite.
 | A booking may run up to 365 days | `MAX_BOOKING_DAYS` | Trivial. |
 | Sessions last 12 hours | `SESSION_TTL_SECONDS` in `src/lib/auth.ts` | Trivial. |
 
+## Imported from the existing site (September 2026)
+
+Source: `cairo-people-vip-lux-p63m.bolt.host`, a single Arabic page. Every
+other route on it returns 404, and its "EN" switch is not wired to anything.
+
+Imported: the three Fast Track tiers with their four advertised inclusions
+each; the twelve car models in their five categories; the 12-hour all-inclusive
+package terms (fuel, driver, parking); the three hotel partners; the Zamalek
+and New Cairo apartments with their two-to-four-bedroom, penthouse, security
+and daily-cleaning detail; a fourth stay type the specification had missed
+entirely, Executive VIP Studios; the hero and about copy; the trust statistics;
+three customer testimonials; and the stock photography.
+
+**Not present on that site, and therefore not imported:**
+
+| Missing | What the site actually says |
+|---|---|
+| Every price | Nothing. Not one figure, for any of the four services. The only numbers on the whole page are `12` (hours per day), `15`, `5000`, `24/7`, `50`, `100`, `2`–`4` (bedrooms), `5` (stars), `7` (BMW 7 Series) and the phone number. |
+| Per-model car counts | Only "+50 سيارة فاخرة" as a fleet-wide marketing figure. It does not say how many Maybachs, or whether the 50 includes partner vehicles. |
+| Apartment and room counts | Nothing. Only that apartments run from two to four bedrooms. |
+| Fast Track daily capacity | Nothing. |
+
+So prices stay at zero and units stay as `PLACEHOLDER-n`. Two tests in
+`tests/catalogue.test.ts` fail if a price field or a real-looking inventory
+count is ever added to the seed.
+
+Two judgement calls worth flagging:
+
+- **Testimonials are shown in Arabic in both locales.** They are three real
+  customers' words. Rewording them in English would put sentences in their
+  mouths that they did not say. Names and cities are transliterated.
+- **"+50 luxury cars" is displayed as-is.** It is the office's own existing
+  claim on its own live site, so reusing it is not a new assertion. If the
+  real fleet is smaller, or the figure counts partner vehicles, that claim
+  needs reviewing before go-live — but that is the office's call, not a
+  technical one.
+
 ## Still needs confirmation
 
 Content and go-live blockers, not architecture blockers.
 
-1. Real prices for every service.
+1. Real prices for every service. Confirmed absent from the existing site, so
+   there is no source for them other than the office.
 2. Real unit counts: how many of each car, how many rooms per hotel, how many
-   apartments per area, how many Fast Track representatives per day.
+   apartments per area, how many Fast Track representatives per day. Also
+   confirmed absent.
+2b. Whether the "+50 luxury cars" figure on the current site is accurate and
+   whether it counts partner vehicles.
 3. Hosting and domain target.
 4. Cancellation and modification policy for a confirmed booking. The system
    currently allows staff to cancel at any point before completion, with no fee
