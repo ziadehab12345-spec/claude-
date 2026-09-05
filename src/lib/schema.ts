@@ -21,6 +21,12 @@ export const ACTIVE_BOOKING_STATUSES: readonly BookingStatus[] = ['pending', 'co
 
 /** Dates are handled as 'YYYY-MM-DD' strings end to end. See src/lib/dates.ts. */
 type DateString = ColumnType<string, string, string>;
+/**
+ * Timestamps are database-generated. The insert type allows `undefined`, which
+ * already makes the column optional, so it must NOT be wrapped in `Generated`
+ * as well — nesting the two makes Selectable resolve to the ColumnType itself
+ * instead of Date.
+ */
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 
 export interface UsersTable {
@@ -30,8 +36,8 @@ export interface UsersTable {
   password_hash: string;
   role: UserRole;
   active: Generated<boolean>;
-  created_at: Generated<Timestamp>;
-  updated_at: Generated<Timestamp>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
 }
 
 export interface ServicesTable {
@@ -48,8 +54,8 @@ export interface ServicesTable {
   image_url: string | null;
   sort_order: Generated<number>;
   active: Generated<boolean>;
-  created_at: Generated<Timestamp>;
-  updated_at: Generated<Timestamp>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
 }
 
 export interface UnitsTable {
@@ -60,8 +66,8 @@ export interface UnitsTable {
   label_en: Generated<string>;
   attributes: Generated<Record<string, unknown>>;
   active: Generated<boolean>;
-  created_at: Generated<Timestamp>;
-  updated_at: Generated<Timestamp>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
 }
 
 export interface BookingsTable {
@@ -87,8 +93,8 @@ export interface BookingsTable {
   payment_notes: Generated<string>;
   notes: Generated<string>;
   created_by_staff_id: string | null;
-  created_at: Generated<Timestamp>;
-  updated_at: Generated<Timestamp>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
 }
 
 export interface UnitBlocksTable {
@@ -99,7 +105,7 @@ export interface UnitBlocksTable {
   occupancy: ColumnType<string, never, never>;
   reason: Generated<string>;
   created_by_staff_id: string | null;
-  created_at: Generated<Timestamp>;
+  created_at: Timestamp;
 }
 
 export interface AuditLogsTable {
@@ -110,7 +116,7 @@ export interface AuditLogsTable {
   entity: string;
   entity_id: string;
   details: Generated<Record<string, unknown>>;
-  created_at: Generated<Timestamp>;
+  created_at: Timestamp;
 }
 
 export interface RateLimitsTable {
