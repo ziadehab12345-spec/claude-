@@ -1,5 +1,21 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { pageMetadata } from '@/lib/metadata';
 import { OFFICE_PHONE_DISPLAY, telLink, whatsappLink } from '@/lib/contact';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const seo = await getTranslations({ locale, namespace: 'seo' });
+  return pageMetadata({
+    locale,
+    path: '/about',
+    title: seo('aboutTitle'),
+    description: seo('aboutDescription'),
+  });
+}
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

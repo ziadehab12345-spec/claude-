@@ -1,7 +1,7 @@
 import createIntlMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 import { routing } from './i18n/routing';
-import { SESSION_COOKIE, readSessionToken } from './lib/auth';
+import { SESSION_COOKIE, readSessionToken } from './lib/session-token';
 
 const intlMiddleware = createIntlMiddleware(routing);
 
@@ -42,5 +42,15 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/(ar|en)/:path*', '/((?!api|_next|_vercel|.*\\..*).*)'],
+  matcher: [
+    '/',
+    '/(ar|en)/:path*',
+    /*
+     * Everything else except the paths that must not be locale-prefixed.
+     * `opengraph-image`, `sitemap.xml`, `robots.txt` and the icons are served
+     * at the root by Next itself; redirecting them to /ar/… breaks link
+     * previews and hands crawlers a 307 instead of the file.
+     */
+    '/((?!api|_next|_vercel|opengraph-image|sitemap\\.xml|robots\\.txt|icon|apple-icon|favicon|.*\\..*).*)',
+  ],
 };

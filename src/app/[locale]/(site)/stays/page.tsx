@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { pageMetadata } from '@/lib/metadata';
 import { db } from '@/lib/db';
 import { listPublicServices } from '@/lib/services';
 import { ServiceGrid, type ServiceCard } from '@/components/ServiceGrid';
@@ -6,6 +7,21 @@ import { ServiceGrid, type ServiceCard } from '@/components/ServiceGrid';
 export const dynamic = 'force-dynamic';
 
 /** Hotels and serviced apartments share a page; both are date-range stays. */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const seo = await getTranslations({ locale, namespace: 'seo' });
+  return pageMetadata({
+    locale,
+    path: '/stays',
+    title: seo('staysTitle'),
+    description: seo('staysDescription'),
+  });
+}
+
 export default async function StaysPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);

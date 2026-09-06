@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing, directionOf } from '@/i18n/routing';
+import { siteOrigin, SITE_NAME_AR, SITE_NAME_EN } from '@/config/site';
+import { organisationJsonLd } from '@/lib/metadata';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -16,13 +18,17 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'brand' });
+  const seo = await getTranslations({ locale, namespace: 'seo' });
+  const name = locale === 'ar' ? SITE_NAME_AR : SITE_NAME_EN;
+
   return {
-    title: { default: `${t('name')} — ${t('tagline')}`, template: `%s — ${t('name')}` },
-    description: t('tagline'),
-    alternates: {
-      languages: { ar: '/ar', en: '/en' },
-    },
+    // Every relative URL in a child page's metadata resolves against this.
+    // Without it Next falls back to localhost and ships broken preview links.
+    metadataBase: new URL(siteOrigin()),
+    title: { default: seo('homeTitle'), template: `%s — ${name}` },
+    description: seo('homeDescription'),
+    applicationName: name,
+    formatDetection: { telephone: true },
   };
 }
 
@@ -48,6 +54,15 @@ export default async function LocaleLayout({
         />
       </head>
       <body>
+        {/*
+          Tells search engines this is one business with a phone number and a
+          location, rather than leaving them to infer it from the page text.
+        */}
+        <script
+          type="application/ld+json"
+          // The value is built from constants in this repository, not user input.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationJsonLd(locale)) }}
+        />
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

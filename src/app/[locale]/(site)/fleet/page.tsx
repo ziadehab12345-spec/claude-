@@ -1,9 +1,25 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { pageMetadata } from '@/lib/metadata';
 import { db } from '@/lib/db';
 import { listPublicServices } from '@/lib/services';
 import { ServiceGrid, type ServiceCard } from '@/components/ServiceGrid';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const seo = await getTranslations({ locale, namespace: 'seo' });
+  return pageMetadata({
+    locale,
+    path: '/fleet',
+    title: seo('fleetTitle'),
+    description: seo('fleetDescription'),
+  });
+}
 
 export default async function FleetPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

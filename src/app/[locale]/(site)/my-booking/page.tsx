@@ -1,5 +1,21 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { pageMetadata } from '@/lib/metadata';
 import { BookingLookup } from '@/components/BookingLookup';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const seo = await getTranslations({ locale, namespace: 'seo' });
+  return pageMetadata({
+    locale,
+    path: '/my-booking',
+    title: seo('lookupTitle'),
+    description: seo('lookupDescription'),
+  });
+}
 
 export default async function MyBookingPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

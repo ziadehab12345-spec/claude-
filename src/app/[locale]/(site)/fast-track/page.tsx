@@ -1,9 +1,25 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { pageMetadata } from '@/lib/metadata';
 import { db } from '@/lib/db';
 import { listPublicServices } from '@/lib/services';
 import { ServiceGrid, type ServiceCard } from '@/components/ServiceGrid';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const seo = await getTranslations({ locale, namespace: 'seo' });
+  return pageMetadata({
+    locale,
+    path: '/fast-track',
+    title: seo('fastTrackTitle'),
+    description: seo('fastTrackDescription'),
+  });
+}
 
 export default async function FastTrackPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

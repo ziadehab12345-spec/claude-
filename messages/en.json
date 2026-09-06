@@ -239,7 +239,8 @@
     "close": "Close",
     "yes": "Yes",
     "no": "No",
-    "currency": "EGP"
+    "currency": "EGP",
+    "skipToContent": "Skip to content"
   },
   "stats": {
     "yearsValue": "15+",
@@ -263,5 +264,19 @@
     "q3": "خدمة الفاست تراك VIP وفّرت علينا وقت وجهد كبير. السيارة المرسيدس كانت نظيفة والسائق يعرف الطرق جيداً. خدمة فاخرة فعلاً.",
     "n3": "Fahd Al-Otaibi",
     "c3": "Doha, Qatar"
+  },
+  "seo": {
+    "homeTitle": "Ahl Cairo | VIP Airport Fast Track, Chauffeured Cars & Stays in Cairo",
+    "homeDescription": "VIP concierge for Gulf families visiting Egypt: airport fast track, luxury cars with a bilingual driver, and five-star hotels and serviced apartments held to the highest standards of privacy.",
+    "fastTrackTitle": "VIP Airport Fast Track",
+    "fastTrackDescription": "A royal welcome from the moment you land: met before passport control, golf cart transfer, or a personal representative at the aircraft steps.",
+    "fleetTitle": "Chauffeured Luxury Fleet",
+    "fleetDescription": "Maybach, S-Class, Range Rover and family vans — an all-inclusive 12-hour daily package with a professional bilingual driver.",
+    "staysTitle": "Hotels & Serviced Apartments",
+    "staysDescription": "Five-star Nile-view hotels, apartments and penthouses in Zamalek and New Cairo, and executive studios.",
+    "aboutTitle": "About Us",
+    "aboutDescription": "Ahl Cairo — a VIP travel and concierge office serving Gulf guests in Egypt.",
+    "lookupTitle": "Track Your Booking",
+    "lookupDescription": "Enter your reference number and phone to check your booking status."
   }
 }

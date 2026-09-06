@@ -4,8 +4,33 @@ import { db } from '@/lib/db';
 import { getServiceBySlug } from '@/lib/services';
 import { BookingFlow } from '@/components/BookingFlow';
 import { Link } from '@/i18n/routing';
+import { pageMetadata } from '@/lib/metadata';
 
 export const dynamic = 'force-dynamic';
+
+/**
+ * Each service gets its own title and description from the catalogue, so a
+ * search for "Mercedes Maybach with driver Cairo" can land on the right page
+ * rather than the generic fleet list.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  const service = await getServiceBySlug(db, slug);
+  if (!service) return {};
+
+  const ar = locale === 'ar';
+  return pageMetadata({
+    locale,
+    path: `/book/${slug}`,
+    title: ar ? service.name_ar : service.name_en,
+    description: (ar ? service.description_ar : service.description_en) || undefined,
+    image: service.image_url,
+  });
+}
 
 const BACK_ROUTE = {
   fasttrack: '/fast-track',

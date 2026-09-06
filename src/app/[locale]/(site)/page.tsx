@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { pageMetadata } from '@/lib/metadata';
 import { Link } from '@/i18n/routing';
 import { db } from '@/lib/db';
 import { listPublicServices } from '@/lib/services';
@@ -13,6 +14,21 @@ const SERVICE_ROUTES: Record<ServiceType, string> = {
   hotel: '/stays',
   apartment: '/stays',
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const seo = await getTranslations({ locale, namespace: 'seo' });
+  return pageMetadata({
+    locale,
+    path: '',
+    title: seo('homeTitle'),
+    description: seo('homeDescription'),
+  });
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

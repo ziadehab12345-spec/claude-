@@ -68,7 +68,7 @@ npm run dev                   # http://localhost:3000
 | `DATABASE_URL` | yes | Postgres connection string |
 | `TEST_DATABASE_URL` | for tests | A separate database — the suite truncates it |
 | `AUTH_SECRET` | yes | 32+ characters. `openssl rand -base64 48` |
-| `NEXT_PUBLIC_SITE_URL` | yes | No trailing slash |
+| `SITE_URL` | yes | No trailing slash |
 | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | first seed only | Creates the first admin. Change the password after signing in. |
 
 Never commit `.env`.
