@@ -1,4 +1,4 @@
-# Ahl Cairo Booking Platform
+# Ahl Cairo — cairopeople.com
 
 Booking platform for مكتب أهل كايرو — a public bilingual website where customers
 request a booking, and an internal dashboard where the office confirms bookings,
@@ -68,7 +68,7 @@ npm run dev                   # http://localhost:3000
 | `DATABASE_URL` | yes | Postgres connection string |
 | `TEST_DATABASE_URL` | for tests | A separate database — the suite truncates it |
 | `AUTH_SECRET` | yes | 32+ characters. `openssl rand -base64 48` |
-| `SITE_URL` | yes | No trailing slash |
+| `SITE_URL` | yes | Canonical origin, no trailing slash. Read at runtime, so changing it needs a restart, not a rebuild. |
 | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | first seed only | Creates the first admin. Change the password after signing in. |
 
 Never commit `.env`.
@@ -118,6 +118,34 @@ Still open, none of which blocks development:
 - Currency (EGP is assumed throughout; prices are stored in minor units)
 
 ---
+
+## Deploying
+
+`docs/DEPLOYMENT.md` is the runbook: Neon for Postgres, Vercel for the app,
+`cairopeople.com` on the front.
+
+Read the note at the top of it first — **Vercel's free Hobby plan does not
+permit commercial use**, and this is a commercial site.
+
+Health check: `GET /api/health` reports a real database round-trip, not just
+that the process is running. Point uptime monitoring there rather than at the
+homepage, which can render fine while Postgres is unreachable.
+
+## Search engines
+
+Everything is generated, so a new service is indexed without anyone
+remembering a step:
+
+- `sitemap.xml` — all public URLs in both locales, each declaring its
+  counterpart.
+- `robots.txt` — allows the public site, excludes the dashboard and API.
+- Canonical URL and reciprocal `hreflang` on every page.
+- `/opengraph-image` — the generated link-preview card.
+- JSON-LD describing the office, its phone number and its city.
+
+Only `SITE_URL === https://cairopeople.com` is indexable. Any other origin — a
+Vercel preview, a staging copy — serves `Disallow: /` and `noindex`, so it
+cannot compete with the real domain in search results.
 
 ## Architecture
 

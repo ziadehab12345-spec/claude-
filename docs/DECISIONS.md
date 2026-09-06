@@ -92,6 +92,23 @@ Two judgement calls worth flagging:
   needs reviewing before go-live — but that is the office's call, not a
   technical one.
 
+## Deployment decisions — September 2026
+
+| # | Decision | Reasoning |
+|---|---|---|
+| 1 | Domain `cairopeople.com`, hosted on Vercel | The office's choice. |
+| 2 | Postgres on Neon, Frankfurt | Vercel bundles no database. Frankfurt is the closest free region to Cairo, so requests are not crossing the Atlantic. |
+| 3 | `SITE_URL`, not `NEXT_PUBLIC_SITE_URL` | Next inlines `NEXT_PUBLIC_` variables at build time, so the value would be frozen into the bundle and changing it would need a rebuild. Nothing client-side reads it. |
+| 4 | Only the production origin is indexable | A preview deployment serves identical content. Left crawlable, it splits the site's ranking across two domains. |
+| 5 | Health check queries the database | The app can boot and render while Postgres is unreachable. A 200 from the homepage does not mean the site works. |
+| 6 | Open Graph card is typographic, not photographic | The photography is stock; a stock photo in a link preview reads as a template. |
+| 7 | Arabic font bundled and subset for the card | Satori cannot shape Arabic with its default font. Subsetting to the drawn characters takes it from 434KB to 6KB, and dropping `rlig` avoids the contextual-substitution lookups Satori rejects. |
+
+**Flagged risk:** Vercel's free Hobby plan prohibits commercial use under its
+Fair Use policy, and this is a company site that brings in customers. It works
+technically, but Vercel can suspend it. Pro is $20/month. The office's call —
+recorded here so it is a decision rather than an oversight.
+
 ## Still needs confirmation
 
 Content and go-live blockers, not architecture blockers.
